@@ -22,16 +22,21 @@ main:
     addi t0, s0, -1    
     mv s2, t0          
 
-    slli t1, s2, 3     
+    slli t1, s2, 3      
 
-    sub sp, sp, t1
-    mv s3, sp        
+    li   t2, 3
+    mul  t1, t1, t2
+    addi t1, t1, 15
+    andi t1, t1, -16  
+    sub  sp, sp, t1     
 
-    sub sp, sp, t1
-    mv s4, sp        
+    mv s3, sp          
+    slli t2, s2, 3
+    add  s4, s3, t2     
+    add  s5, s4, t2    
 
-    sub sp, sp, t1
-    mv s5, sp        
+    li s6, -1
+    li s8, 1
 
 parse_loop:
     bge s8, s0, parse_done
@@ -109,13 +114,13 @@ print_loop:
     ld a1, 0(t2)
 
     la a0, fmt
-    addi sp, sp, -16
-    sd t0, 0(sp)
+    addi t3, s7, -128      
+    sd t0, 96(t3)          
 
     call printf
 
-    ld t0, 0(sp)
-    addi sp, sp, 16
+    addi t3, s7, -128
+    ld t0, 96(t3)          
     addi t0, t0, 1
     j print_loop
 
@@ -135,4 +140,3 @@ print_done:
 
     li a0, 0
     ret
-
