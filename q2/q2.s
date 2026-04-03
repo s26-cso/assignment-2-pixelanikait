@@ -1,7 +1,7 @@
 .globl main
 .extern printf
 .extern atoi
-.extern fflush
+.extern putchar
 
 .section .rodata
 fmt_first: .string "%d"
@@ -130,7 +130,7 @@ print_call:
     ld t0, 96(t3)
     addi t0, t0, 1
     j print_loop
-
+    
 print_done:
     addi sp, s7, -128
     ld ra, 120(sp)
@@ -140,14 +140,11 @@ print_done:
 
     addi sp, sp, -16
     sd ra, 0(sp)
-    la a0, fmt_nl
-    call printf
-    li a0, 0
-    call fflush
+    li a0, 10
+    call putchar
     ld ra, 0(sp)
     addi sp, sp, 16
 
     li a0, 0
     ret
 
-    
