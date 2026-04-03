@@ -3,7 +3,8 @@
 .extern atoi
 
 .section .rodata
-fmt: .string "%d "
+fmt:    .string "%d "
+fmt_nl: .string "\n"
 
 .text
 
@@ -39,7 +40,7 @@ parse_loop:
     slli t3, s8, 3
     add t4, s1, t3
     ld a0, 0(t4)
-    call atoi                    # no need to save s8, it's callee-saved
+    call atoi
     addi t5, s8, -1
     slli t5, t5, 3
     add t6, s3, t5
@@ -79,7 +80,6 @@ while_done:
 
     blt s6, zero, set_minus
 
-    # get stack[top]
     slli t3, s6, 3
     add t4, s5, t3
     ld t5, 0(t4)
@@ -122,11 +122,18 @@ print_loop:
     j print_loop
 
 print_done:
-    addi sp, s7, -128 
+    addi sp, s7, -128
     ld ra, 120(sp)
     ld s0, 112(sp)
     ld s8, 104(sp)
     mv sp, s7
+
+    addi sp, sp, -16
+    sd ra, 8(sp)
+    la a0, fmt_nl
+    call printf
+    ld ra, 8(sp)
+    addi sp, sp, 16
 
     li a0, 0
     ret
