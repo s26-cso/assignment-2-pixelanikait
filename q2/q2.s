@@ -24,17 +24,15 @@ main:
 
     slli t1, s2, 3     
 
-    mv s3, sp
-    sub sp, sp, t1   
+    sub sp, sp, t1
+    mv s3, sp        
 
-    mv s4, sp
-    sub sp, sp, t1   
+    sub sp, sp, t1
+    mv s4, sp        
 
-    mv s5, sp
-    sub sp, sp, t1  
+    sub sp, sp, t1
+    mv s5, sp        
 
-    li s6, -1          
-    li s8, 1           
 parse_loop:
     bge s8, s0, parse_done
     slli t3, s8, 3
