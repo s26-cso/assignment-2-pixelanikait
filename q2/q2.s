@@ -1,10 +1,12 @@
 .globl main
 .extern printf
 .extern atoi
+.extern fflush
 
 .section .rodata
-fmt:    .string "%d "
-fmt_nl: .string "\n"
+fmt_first: .string "%d"
+fmt_rest:  .string " %d"
+fmt_nl:    .string "\n"
 
 .text
 
@@ -113,14 +115,19 @@ print_loop:
     add t2, s4, t1
     ld a1, 0(t2)
 
-    la a0, fmt
-    addi t3, s7, -128      
-    sd t0, 96(t3)          
+    addi t3, s7, -128
+    sd t0, 96(t3)
 
+    beqz t0, print_first    # if t0==0, use fmt_first
+    la a0, fmt_rest
+    j print_call
+print_first:
+    la a0, fmt_first
+print_call:
     call printf
 
     addi t3, s7, -128
-    ld t0, 96(t3)          
+    ld t0, 96(t3)
     addi t0, t0, 1
     j print_loop
 
@@ -132,11 +139,15 @@ print_done:
     mv sp, s7
 
     addi sp, sp, -16
-    sd ra, 8(sp)
+    sd ra, 0(sp)
     la a0, fmt_nl
     call printf
-    ld ra, 8(sp)
+    li a0, 0
+    call fflush
+    ld ra, 0(sp)
     addi sp, sp, 16
 
     li a0, 0
     ret
+
+    
