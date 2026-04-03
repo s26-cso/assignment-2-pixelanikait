@@ -5,6 +5,7 @@
 .section .rodata
 fmt_first: .string "%d"
 fmt_rest:  .string " %d"
+fmt_last: .string " %d\n"
 nl:        .byte 10
 
 .text
@@ -16,6 +17,12 @@ main:
     sd ra, 120(sp)
     sd s0, 112(sp)
     sd s8, 104(sp)
+    sd s1, 96(sp)
+    sd s2, 88(sp)
+    sd s3, 80(sp)
+    sd s4, 72(sp)
+    sd s5, 64(sp)
+    sd s6, 56(sp)
 
     mv s0, a0         
     mv s1, a1          
@@ -38,6 +45,8 @@ main:
 
     li s6, -1
     li s8, 1
+
+    ble s2, zero, print_done
 
 parse_loop:
     bge s8, s0, parse_done
@@ -114,36 +123,45 @@ print_loop:
     add t2, s4, t1
     ld a1, 0(t2)
 
-    addi t3, s7, -128
-    sd t0, 96(t3)
+    beq t0, zero, first_elem
 
-    beqz t0, print_first    # if t0==0, use fmt_first
+    addi t3, s2, -1
+    beq t0, t3, last_elem
+
     la a0, fmt_rest
     j print_call
-print_first:
-    la a0, fmt_first
-print_call:
-    call printf
 
-    addi t3, s7, -128
-    ld t0, 96(t3)
+first_elem:
+    addi t3, s2, -1
+    beq t0, t3, last_elem
+    la a0, fmt_first
+    j print_call
+
+last_elem:
+    la a0, fmt_last
+
+print_call:
+    mv s9, t0
+    call printf
+    mv t0, s9
+
     addi t0, t0, 1
     j print_loop
 
 print_done:
-    addi sp, s7, -128
     ld ra, 120(sp)
     ld s0, 112(sp)
     ld s8, 104(sp)
+    ld s1, 96(sp)
+    ld s2, 88(sp)
+    ld s3, 80(sp)
+    ld s4, 72(sp)
+    ld s5, 64(sp)
+    ld s6, 56(sp)
+
     mv sp, s7
 
-    li a7, 64        
-    li a0, 1         
-    la a1, nl      
-    li a2, 1        
-    ecall
-
     li a0, 0
-    ret
-
+    li a7, 93     # exit syscall
+    ecall
 
