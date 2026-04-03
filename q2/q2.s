@@ -1,8 +1,16 @@
 .globl main
 .globl next_greater
+.extern printf
+.extern atoi
+
+.section .rodata
+fmt_first: .string "%d"
+fmt_rest:  .string " %d"
+fmt_last:  .string " %d\n"
+
+.text
 
 next_greater:
-    # a0 = arr, a1 = n, a2 = result
     addi sp, sp, -64
     sd ra, 56(sp)
     sd s0, 48(sp)
@@ -100,7 +108,6 @@ main:
     mv s1, a1
     addi s2, a0, -1
 
-    # allocate arr and result
     slli t1, s2, 2
     li t2, 2
     mul t1, t1, t2
@@ -181,3 +188,6 @@ print_done:
     mv sp, s7
     li a0, 0
     ret
+
+
+    
