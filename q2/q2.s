@@ -1,12 +1,11 @@
 .globl main
 .extern printf
 .extern atoi
-.extern putchar
 
 .section .rodata
 fmt_first: .string "%d"
 fmt_rest:  .string " %d"
-fmt_nl:    .string "\n"
+nl:        .byte 10
 
 .text
 
@@ -130,7 +129,7 @@ print_call:
     ld t0, 96(t3)
     addi t0, t0, 1
     j print_loop
-    
+
 print_done:
     addi sp, s7, -128
     ld ra, 120(sp)
@@ -138,13 +137,13 @@ print_done:
     ld s8, 104(sp)
     mv sp, s7
 
-    addi sp, sp, -16
-    sd ra, 0(sp)
-    li a0, 10
-    call putchar
-    ld ra, 0(sp)
-    addi sp, sp, 16
+    li a7, 64        
+    li a0, 1         
+    la a1, nl      
+    li a2, 1        
+    ecall
 
     li a0, 0
     ret
+
 
