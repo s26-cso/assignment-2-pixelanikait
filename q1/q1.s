@@ -35,8 +35,6 @@ insert:
 
     blt a1, t0, insert_left
     bgt a1, t0, insert_right
-
-    # equal → return root
     ld a0, 8(sp)
     j insert_end
 
@@ -79,8 +77,6 @@ get:
     beq a1, t0, get_found
 
     blt a1, t0, get_left
-
-    # go right
     ld a0, 16(a0)
     call get
     j get_end
@@ -91,7 +87,6 @@ get_left:
     j get_end
 
 get_found:
-    # a0 already has root
     j get_end
 
 get_not_found:
@@ -115,7 +110,6 @@ loop_getAtMost:
 
     ble t1, a0, valid_case
 
-    # go left
     ld a1, 8(a1)
     j loop_getAtMost
 
